@@ -7,12 +7,13 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.entities.CURRENT_USER_ID
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.entities.User
+import org.jetbrains.annotations.NotNull
 
 @Dao
 interface UserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user: User)
+   suspend fun insertUser(user: User) :Long
 
     @Query("SELECT * from user_table where uid=$CURRENT_USER_ID")
     fun getUserData(): LiveData<User>

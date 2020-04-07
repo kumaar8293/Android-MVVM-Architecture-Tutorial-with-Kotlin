@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.karumi.dexter.Dexter
@@ -23,11 +24,17 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.mukesh.mvvmarchitecturetutorialkotlin.R
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.AppDatabase
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.entities.User
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.MyApi
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories.UserRepository
 import com.mukesh.mvvmarchitecturetutorialkotlin.databinding.ActivitySigninBinding
+import com.mukesh.mvvmarchitecturetutorialkotlin.ui.home.HomeActivity
 import com.mukesh.mvvmarchitecturetutorialkotlin.utils.*
 import kotlinx.android.synthetic.main.activity_signin.*
 
+
+const val TAG: String = "SignInActivity"
 
 class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
 
@@ -45,16 +52,46 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
         super.onCreate(savedInstanceState)
         // setContentView(R.layout.activity_signin)
 
+        //I am doing Constructor dependencies injection
+        val myApi = MyApi()
+        val db = AppDatabase(this)
+        val repository = UserRepository(db, myApi)
+
+        //I am using ViewModelFactory pattern ,so that i can pass the repository to viewmodel
+
+        val factory = AuthViewModelFactory(repository)
+
         val binding: ActivitySigninBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_signin)
 
         // Use the 'by viewModels()' Kotlin property delegate
         // from the activity-ktx artifact
         // val viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
-        val viewModel: AuthViewModel by viewModels()
+        val viewModel = ViewModelProvider(this, factory).get(AuthViewModel::class.java)
+
+        // val viewModel: AuthViewModel by viewModels()
 
         binding.viewmodel = viewModel
         viewModel.authListener = this
+
+        viewModel.getLoggedInUser().observe(this, Observer {
+
+            println("$TAG    $it")
+            if (it != null) {
+
+                println("$TAG    $it")
+                Intent(this, HomeActivity::class.java).also { intent ->
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                    println("$TAG    GO TO HOME ACTIVITY")
+                    startActivity(intent)
+                }
+
+            }
+        })
+
+
+
         checkPermission()
 
         initView()
@@ -136,7 +173,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
         progress_bar.hideProgressBar()
 //        myToast("Login success ${user.name}")
 
-        root_view.simpleSnackbar("Login success ${user.name}")
+        //  root_view.simpleSnackbar("Login success ${user.name}")
     }
 
     override fun onFailed(message: String) {

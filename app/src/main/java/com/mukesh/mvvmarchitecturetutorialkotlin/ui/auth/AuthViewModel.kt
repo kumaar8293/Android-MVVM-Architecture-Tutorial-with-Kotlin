@@ -6,7 +6,7 @@ import com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories.UserRepositor
 import com.mukesh.mvvmarchitecturetutorialkotlin.utils.ApiException
 import com.mukesh.mvvmarchitecturetutorialkotlin.utils.Coroutines
 
-class AuthViewModel : ViewModel() {
+class AuthViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     var email: String? = null
     var password: String? = null
@@ -37,10 +37,11 @@ class AuthViewModel : ViewModel() {
              }*/
 
             try {
-                val loginResponse = UserRepository().userLogin(email!!, password!!)
+                val loginResponse = userRepository.userLogin(email!!, password!!)
                 loginResponse.user?.let {
                     //If user is not null
-                    authListener?.onSuccess(loginResponse.user)
+                    authListener?.onSuccess(it)
+                    userRepository.insertUserToDatabase(it)
                     return@main
                 }
                 //If response is success but user is null
@@ -53,4 +54,5 @@ class AuthViewModel : ViewModel() {
         }
 //authListener?.onSuccess(loginResponse)
     }
+    fun  getLoggedInUser()=userRepository.getUserDetails()
 }
