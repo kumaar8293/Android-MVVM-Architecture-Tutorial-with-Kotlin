@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories.UserRepository
 import com.mukesh.mvvmarchitecturetutorialkotlin.utils.ApiException
 import com.mukesh.mvvmarchitecturetutorialkotlin.utils.Coroutines
+import com.mukesh.mvvmarchitecturetutorialkotlin.utils.NoInternetException
 
 class AuthViewModel(private val userRepository: UserRepository) : ViewModel() {
 
@@ -48,11 +49,14 @@ class AuthViewModel(private val userRepository: UserRepository) : ViewModel() {
                 authListener?.onFailed(loginResponse.message!!)
             } catch (e: ApiException) {
                 authListener?.onFailed(e.message.toString())
+            } catch (e: NoInternetException) {
+                authListener?.onFailed(e.message.toString())
             }
 
 
         }
 //authListener?.onSuccess(loginResponse)
     }
-    fun  getLoggedInUser()=userRepository.getUserDetails()
+
+    fun getLoggedInUser() = userRepository.getUserDetails()
 }

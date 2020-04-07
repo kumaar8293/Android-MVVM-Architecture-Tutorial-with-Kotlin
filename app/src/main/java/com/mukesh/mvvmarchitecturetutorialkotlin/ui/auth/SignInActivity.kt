@@ -9,10 +9,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
@@ -27,6 +25,7 @@ import com.mukesh.mvvmarchitecturetutorialkotlin.R
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.AppDatabase
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.entities.User
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.MyApi
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.NetworkConnectionInterceptor
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories.UserRepository
 import com.mukesh.mvvmarchitecturetutorialkotlin.databinding.ActivitySigninBinding
 import com.mukesh.mvvmarchitecturetutorialkotlin.ui.home.HomeActivity
@@ -53,7 +52,8 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
         // setContentView(R.layout.activity_signin)
 
         //I am doing Constructor dependencies injection
-        val myApi = MyApi()
+        val networkConnectionInterceptor = NetworkConnectionInterceptor(this)
+        val myApi = MyApi(networkConnectionInterceptor)
         val db = AppDatabase(this)
         val repository = UserRepository(db, myApi)
 
@@ -75,15 +75,9 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
         viewModel.authListener = this
 
         viewModel.getLoggedInUser().observe(this, Observer {
-
-            println("$TAG    $it")
             if (it != null) {
-
-                println("$TAG    $it")
                 Intent(this, HomeActivity::class.java).also { intent ->
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-                    println("$TAG    GO TO HOME ACTIVITY")
                     startActivity(intent)
                 }
 

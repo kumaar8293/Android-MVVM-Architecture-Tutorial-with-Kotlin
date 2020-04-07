@@ -2,9 +2,7 @@ package com.mukesh.mvvmarchitecturetutorialkotlin.data.network
 
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.responses.AuthResponse
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,17 +25,21 @@ interface MyApi {
     ): Response<AuthResponse>
 
     companion object {
-        operator fun invoke(): MyApi {
+        operator fun invoke(
+            networkConnectionInterceptor: NetworkConnectionInterceptor
+        ): MyApi {
             val logging = HttpLoggingInterceptor()
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .addInterceptor(networkConnectionInterceptor)
                 .build()
+//                .addNetworkInterceptor(networkConnectionInterceptor)
 
             return Retrofit.Builder()
+                .client(client)
                 .baseUrl("https://api.simplifiedcoding.in/course-apis/mvvm/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
                 .build()
                 .create(MyApi::class.java)
         }
