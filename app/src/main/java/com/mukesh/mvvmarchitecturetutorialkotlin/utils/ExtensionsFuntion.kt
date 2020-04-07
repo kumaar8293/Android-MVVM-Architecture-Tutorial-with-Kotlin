@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 
 
 fun EditText.isEmpty(): Boolean {
@@ -34,4 +35,18 @@ fun Activity.hideKeyBoard() {
             this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
+}
+
+fun View.simpleSnackbar(message: String) {
+
+    Snackbar.make(this, message, Snackbar.LENGTH_LONG).show()
+}
+
+fun View.snackbarWithAction(message: String) {
+
+    Snackbar.make(this, message, Snackbar.LENGTH_LONG).also { snakebar ->
+        snakebar.setAction("Ok") {
+            snakebar.dismiss()
+        }
+    }.show()
 }

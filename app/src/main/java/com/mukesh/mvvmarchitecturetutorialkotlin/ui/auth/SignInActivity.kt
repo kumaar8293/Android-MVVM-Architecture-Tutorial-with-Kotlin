@@ -134,11 +134,14 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
 
     override fun onSuccess(user: User) {
         progress_bar.hideProgressBar()
-        myToast("Login success ${user.name}")
+//        myToast("Login success ${user.name}")
+
+        root_view.simpleSnackbar("Login success ${user.name}")
     }
 
     override fun onFailed(message: String) {
-        myToast("Login failed : $message")
+//        myToast("Login failed : $message")
         progress_bar.hideProgressBar()
+        root_view.snackbarWithAction(message)
     }
 }
