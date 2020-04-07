@@ -1,39 +1,22 @@
 package com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.MyApi
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.SafeApiRequest
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.responses.AuthResponse
 
-class UserRepository {
+class UserRepository : SafeApiRequest() {
 
+    //Suspended function ( login()) can be called from
+    // Couroutine or another Suspended function
+    //We need to make our function as suspended
+    suspend fun userLogin(email: String, password: String): AuthResponse {
 
-    fun userLogin(email: String, password: String): LiveData<String> {
+        return apiRequest {
+            MyApi().login(email, password)
+        }
+        //  return MyApi().login(email, password)
 
-        val loginResponse = MutableLiveData<String>()
-        // val myApi = ApiClient.getInstance()?.create(MyApi::class.java)
-
-        MyApi.invoke().login(email, password)
-            .enqueue(object : Callback<ResponseBody> {
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    loginResponse.value = t.message
-                }
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-
-                    if (response.isSuccessful) {
-                        loginResponse.value = response.body()?.string()
-                    } else {
-                        loginResponse.value = response.errorBody()?.string()
-                    }
-                }
-
-            })
-        return loginResponse
     }
+
+
 }

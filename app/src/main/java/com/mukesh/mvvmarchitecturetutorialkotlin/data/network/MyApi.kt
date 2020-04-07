@@ -15,13 +15,16 @@ import retrofit2.http.POST
 
 interface MyApi {
 
-    //This is simple method without coroutine
+    //We are using suspended function here for coroutine
+    //Suspending function are the center of the everything in Coroutine
+    //Suspending function can be paused and resume at later time
+    //It is used for long running process without blocking main thread
     @FormUrlEncoded
     @POST("login")
-    fun login(
+    suspend fun login(
         @Field("email") email: String,
         @Field("password") password: String
-    ): Call<ResponseBody>
+    ): Response<AuthResponse>
 
     companion object {
         operator fun invoke(): MyApi {
