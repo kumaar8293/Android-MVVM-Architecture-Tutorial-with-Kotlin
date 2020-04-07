@@ -23,6 +23,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.mukesh.mvvmarchitecturetutorialkotlin.R
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.entities.User
 import com.mukesh.mvvmarchitecturetutorialkotlin.databinding.ActivitySigninBinding
 import com.mukesh.mvvmarchitecturetutorialkotlin.utils.*
 import kotlinx.android.synthetic.main.activity_signin.*
@@ -131,12 +132,9 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
         myToast("Login Started")
     }
 
-    override fun onSuccess(loginResponse: LiveData<String>) {
-        loginResponse.observe(this, Observer {
-            myToast(it)
-            progress_bar.hideProgressBar()
-
-        })
+    override fun onSuccess(user: User) {
+        progress_bar.hideProgressBar()
+        myToast("Login success ${user.name}")
     }
 
     override fun onFailed(message: String) {
