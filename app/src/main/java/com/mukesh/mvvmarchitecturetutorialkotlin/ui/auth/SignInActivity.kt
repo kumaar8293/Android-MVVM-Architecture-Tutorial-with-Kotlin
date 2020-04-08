@@ -22,20 +22,20 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.mukesh.mvvmarchitecturetutorialkotlin.R
-import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.AppDatabase
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.entities.User
-import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.MyApi
-import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.NetworkConnectionInterceptor
-import com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories.UserRepository
 import com.mukesh.mvvmarchitecturetutorialkotlin.databinding.ActivitySigninBinding
 import com.mukesh.mvvmarchitecturetutorialkotlin.ui.home.HomeActivity
 import com.mukesh.mvvmarchitecturetutorialkotlin.utils.*
 import kotlinx.android.synthetic.main.activity_signin.*
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.kodein
+import org.kodein.di.generic.instance
 
 
 const val TAG: String = "SignInActivity"
 
-class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
+class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener, KodeinAware {
 
     private lateinit var appLogo: ImageView
     private lateinit var tvWelcomeThere: TextView
@@ -47,19 +47,36 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
     private lateinit var editUserName: TextInputEditText
     private lateinit var editPassword: TextInputEditText
 
+    //This is how we get instances fom Kodein
+    // You will get an error with kodein() method then
+    // You need to import import org.kodein.di.android.kodein manually
+    override val kodein: Kodein by kodein() //Here we get kodein instance
+    val factory: AuthViewModelFactory by instance()
+    //This is how we get instance from Kodein, This will simply return AuthViewModelFactory instance
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // setContentView(R.layout.activity_signin)
-
-        //I am doing Constructor dependencies injection
-        val networkConnectionInterceptor = NetworkConnectionInterceptor(this)
-        val myApi = MyApi(networkConnectionInterceptor)
-        val db = AppDatabase(this)
-        val repository = UserRepository(db, myApi)
+        /** In this activity we need AuthViewModelFactory to initialize ViewModel for LoginActivity
+         * Which takes UserRepository as arguments
+         * Following is the old techniques to Handle Constructor Dependency injection
+         * Now we will use KODEIN
+         * > Simply implement the KodeinAware interface
+         * >Then get koding
+         * >Then get AuthViewModelFactory instance from kodein as above ,, class level
+         *
+         */
+        /*
+         //I am doing Constructor dependencies injection
+         val networkConnectionInterceptor = NetworkConnectionInterceptor(this)
+         val myApi = MyApi(networkConnectionInterceptor)
+         val db = AppDatabase(this)
+         val repository = UserRepository(db, myApi)*/
 
         //I am using ViewModelFactory pattern ,so that i can pass the repository to viewmodel
 
-        val factory = AuthViewModelFactory(repository)
+      //  val factory = AuthViewModelFactory(repository)
 
         val binding: ActivitySigninBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_signin)
@@ -126,12 +143,12 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener {
     }
 
     override fun onClick(view: View?) {
-        when (view?.id) {
+       /* when (view?.id) {
             R.id.goButton -> loginValidation()
             R.id.signUpButton -> openSignUpPage()
             else -> {
             }
-        }
+        }*/
     }
 
     private fun loginValidation() {
