@@ -1,16 +1,49 @@
 package com.mukesh.mvvmarchitecturetutorialkotlin.ui.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.mukesh.mvvmarchitecturetutorialkotlin.R
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.entities.User
+import com.mukesh.mvvmarchitecturetutorialkotlin.databinding.ActivitySignUpBinding
+import com.mukesh.mvvmarchitecturetutorialkotlin.ui.home.HomeActivity
+import com.mukesh.mvvmarchitecturetutorialkotlin.utils.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.kodein
+import org.kodein.di.generic.instance
 
-class SignUpActivity : AppCompatActivity(), View.OnClickListener {
+class SignUpActivity : AppCompatActivity(), KodeinAware, AuthListener, View.OnClickListener {
+
+    override val kodein: Kodein by kodein()
+    private val factory: AuthViewModelFactory by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
+
+        val binding: ActivitySignUpBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_sign_up)
+
+        val viewModel = ViewModelProvider(this, factory)
+            .get(AuthViewModel::class.java)
+        binding.viewmodel = viewModel
+        viewModel.authListener = this
+
+        viewModel.getLoggedInUser().observe(this, Observer {
+            if (it != null) {
+                Intent(this, HomeActivity::class.java).also { intent ->
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
+
+            }
+        })
+//        setContentView(R.layout.activity_sign_up)
         alreadyHaveAccount.setOnClickListener(this)
     }
 
@@ -20,5 +53,25 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             R.id.alreadyHaveAccount -> onBackPressed()
 
         }
+    }
+
+    override fun onStarted() {
+        hideKeyBoard()
+        progress_bar.showProgressBar()
+
+       // myToast("Login Started")
+    }
+
+    override fun onSuccess(user: User) {
+        progress_bar.hideProgressBar()
+//        myToast("Login success ${user.name}")
+
+        //  root_view.simpleSnackbar("Login success ${user.name}")
+    }
+
+    override fun onFailed(message: String) {
+//        myToast("Login failed : $message")
+        progress_bar.hideProgressBar()
+        root_view.snackbarWithAction(message)
     }
 }

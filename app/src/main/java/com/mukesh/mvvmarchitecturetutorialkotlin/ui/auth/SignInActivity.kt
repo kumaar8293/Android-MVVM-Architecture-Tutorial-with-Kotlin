@@ -114,10 +114,10 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener, 
         tvWelcomeThere = findViewById(R.id.welcome_message)
         tvSignInToContinue = findViewById(R.id.sign_in_message)
         username = findViewById(R.id.userEmail)
-        password = findViewById(R.id.password)
+        password = findViewById(R.id.confirmpassword)
         goButton = findViewById(R.id.goButton)
         signUpButton = findViewById(R.id.signUpButton)
-        editPassword = findViewById(R.id.editPassword)
+        editPassword = findViewById(R.id.editConfirmPassword)
         editUserName = findViewById(R.id.editUserEmail)
         goButton.setOnClickListener(this)
         signUpButton.setOnClickListener(this)
@@ -143,12 +143,12 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener, AuthListener, 
     }
 
     override fun onClick(view: View?) {
-       /* when (view?.id) {
-            R.id.goButton -> loginValidation()
+        when (view?.id) {
+           // R.id.goButton -> loginValidation()
             R.id.signUpButton -> openSignUpPage()
             else -> {
             }
-        }*/
+        }
     }
 
     private fun loginValidation() {

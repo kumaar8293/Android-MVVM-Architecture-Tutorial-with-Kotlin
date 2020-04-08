@@ -24,6 +24,14 @@ interface MyApi {
         @Field("password") password: String
     ): Response<AuthResponse>
 
+    @FormUrlEncoded
+    @POST("signup")
+    suspend fun userSignup(
+        @Field("email") email: String,
+        @Field("password") password: String,
+        @Field("name") name: String
+    ): Response<AuthResponse>
+
     companion object {
         operator fun invoke(
             networkConnectionInterceptor: NetworkConnectionInterceptor

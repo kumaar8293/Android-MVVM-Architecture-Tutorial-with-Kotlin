@@ -15,7 +15,6 @@ abstract class SafeApiRequest {
      * In the following suspend function which is type ANY ,
      * is taking a suspend function call as a parameter
      * call function doesn't take any parameter
-     *
      */
 
     suspend fun <T : Any> apiRequest(call: suspend () -> Response<T>): T {

@@ -27,5 +27,15 @@ class UserRepository(
 
     fun getUserDetails() = db.getUserDoa().getUserData()
 
+    suspend fun userSignup(
+        name: String,
+        email: String,
+        password: String
+    ): AuthResponse {
 
+        return apiRequest {
+            myApi.userSignup(email, password, name)
+        }
+
+    }
 }
