@@ -23,9 +23,9 @@ class UserRepository(
 
     }
 
-    suspend fun insertUserToDatabase(user: User) = db.getUserDoa().insertUser(user)
+    suspend fun insertUserToDatabase(user: User) = db.getUserDao().insertUser(user)
 
-    fun getUserDetails() = db.getUserDoa().getUserData()
+    fun getUserDetails() = db.getUserDao().getUserData()
 
     suspend fun userSignup(
         name: String,

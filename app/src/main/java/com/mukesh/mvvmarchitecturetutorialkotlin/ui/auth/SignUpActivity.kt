@@ -1,16 +1,13 @@
 package com.mukesh.mvvmarchitecturetutorialkotlin.ui.auth
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mukesh.mvvmarchitecturetutorialkotlin.R
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.entities.User
 import com.mukesh.mvvmarchitecturetutorialkotlin.databinding.ActivitySignUpBinding
-import com.mukesh.mvvmarchitecturetutorialkotlin.ui.home.HomeActivity
 import com.mukesh.mvvmarchitecturetutorialkotlin.utils.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.kodein.di.Kodein
@@ -34,15 +31,7 @@ class SignUpActivity : AppCompatActivity(), KodeinAware, AuthListener, View.OnCl
         binding.viewmodel = viewModel
         viewModel.authListener = this
 
-        viewModel.getLoggedInUser().observe(this, Observer {
-            if (it != null) {
-                Intent(this, HomeActivity::class.java).also { intent ->
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                }
 
-            }
-        })
 //        setContentView(R.layout.activity_sign_up)
         alreadyHaveAccount.setOnClickListener(this)
     }

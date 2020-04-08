@@ -1,5 +1,6 @@
 package com.mukesh.mvvmarchitecturetutorialkotlin.ui.auth
 
+import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModel
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories.UserRepository
@@ -56,10 +57,10 @@ class AuthViewModel(private val userRepository: UserRepository) : ViewModel() {
                 authListener?.onFailed(e.message.toString())
             }
 
-
         }
 //authListener?.onSuccess(loginResponse)
     }
+
 
     fun getLoggedInUser() = userRepository.getUserDetails()
 
@@ -92,7 +93,7 @@ class AuthViewModel(private val userRepository: UserRepository) : ViewModel() {
 
         Coroutines.main {
             try {
-                val loginResponse = userRepository.userSignup(name!!,email!!, password!!)
+                val loginResponse = userRepository.userSignup(name!!, email!!, password!!)
                 loginResponse.user?.let {
                     //If user is not null
                     authListener?.onSuccess(it)

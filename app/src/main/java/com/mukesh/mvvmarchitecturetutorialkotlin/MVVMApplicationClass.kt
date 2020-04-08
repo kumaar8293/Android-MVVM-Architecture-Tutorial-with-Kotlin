@@ -6,6 +6,7 @@ import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.MyApi
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.NetworkConnectionInterceptor
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories.UserRepository
 import com.mukesh.mvvmarchitecturetutorialkotlin.ui.auth.AuthViewModelFactory
+import com.mukesh.mvvmarchitecturetutorialkotlin.ui.home.profile.ProfileViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -37,6 +38,8 @@ class MVVMApplicationClass : Application(), KodeinAware {
         //AuthViewModelFactory doesn't should be singleton so we will user provider
         //AuthViewModelFactory needs UserRepository
         bind() from provider { AuthViewModelFactory(instance()) }
+
+        bind() from provider { ProfileViewModelFactory(instance()) }
 
     }
 }

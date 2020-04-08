@@ -22,4 +22,10 @@ object Coroutines {
         CoroutineScope(Dispatchers.Main).launch {
             work()
         }
+
+    //IOThread is from saving quotes inside Database
+    fun ioThread(work: suspend (() -> Unit)) =
+        CoroutineScope(Dispatchers.IO).launch {
+            work()
+        }
 }
