@@ -4,9 +4,12 @@ import android.app.Application
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.AppDatabase
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.MyApi
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.network.NetworkConnectionInterceptor
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.preferences.PreferenceProvider
+import com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories.QuotesRepository
 import com.mukesh.mvvmarchitecturetutorialkotlin.data.repositories.UserRepository
 import com.mukesh.mvvmarchitecturetutorialkotlin.ui.auth.AuthViewModelFactory
 import com.mukesh.mvvmarchitecturetutorialkotlin.ui.home.profile.ProfileViewModelFactory
+import com.mukesh.mvvmarchitecturetutorialkotlin.ui.home.quotes.QuotesViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -40,6 +43,11 @@ class MVVMApplicationClass : Application(), KodeinAware {
         bind() from provider { AuthViewModelFactory(instance()) }
 
         bind() from provider { ProfileViewModelFactory(instance()) }
+
+        bind() from provider { PreferenceProvider(instance()) }
+        bind() from provider { QuotesRepository(instance(),instance(),instance())}
+
+        bind() from provider { QuotesViewModelFactory(instance()) }
 
     }
 }

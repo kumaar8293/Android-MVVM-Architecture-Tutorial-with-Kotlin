@@ -9,7 +9,7 @@ import com.mukesh.mvvmarchitecturetutorialkotlin.data.db.entities.User
 
 @Database(
     entities = [User::class, Quote::class],
-    version = 2
+    version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
 
